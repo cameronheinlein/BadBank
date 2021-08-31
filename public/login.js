@@ -29,25 +29,20 @@ function LoginForm(props){
   const [email, setEmail]       = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const ctx = React.useContext(UserContext);  
-
   function handle(){
-    const user = ctx.users.find((user) => user.email == email);
-    console.log(user);
-    console.log(email, password);
-    if (!user) {
-      console.log('one')      
-      props.setStatus('fail!')      
-      return;      
-    }
-    if (user.password == password) {
-      console.log('two')            
-      props.setStatus('');
-      props.setShow(false);
-      return;      
-    }
-    console.log('three')          
-    props.setStatus('fail!');        
+    fetch(`/account/login/${email}/${password}`)
+    .then(response => response.text())
+    .then(text => {
+        try {
+            const data = JSON.parse(text);
+            props.setStatus('');
+            props.setShow(false);
+            console.log('JSON:', data);
+        } catch(err) {
+            props.setStatus(text)
+            console.log('err:', text);
+        }
+    });
   }
 
 
